@@ -1,5 +1,9 @@
 <template>
-   <HelloWorld msg="Welcome to Your Vue.js App"/>
+<div>
+  <div id="nav"></div>
+  <div id="main"></div>
+  <div id="footer"></div>
+</div>
 </template>
 
 <script>
