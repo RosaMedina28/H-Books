@@ -7,6 +7,14 @@ import registerpage from '../Vue/RegisterPage.vue';
 import bookseccion from '../Vue/BookSeccion.vue';
 import profile from '../Vue/ProfilePage.vue';
 
+import listarlibros from '../admin/Libro/ListarLibros.vue';
+import ActualizarLibro from '../admin/Libro/ActualizarLibro.vue';
+import InsertarLibro from '../admin/Libro/InsertarLibro.vue';
+
+import ListarCategorias from '../admin/Categorias/ListarCategorias.vue';
+import InsertarCategoria from '../admin/Categorias/InsertarCategoria.vue';
+import EditarCategoria from '../admin/Categorias/EditarCategoria.vue';
+
 const router = createRouter({
     //history: createWebHistory(process.env.BASE_URL),
     history: createWebHistory(),
@@ -16,8 +24,14 @@ const router = createRouter({
         {path:'/category/:category',component:category},
         {path: '/login',component:login},
         {path:'/register',component:registerpage},
-        {path: '/book/:book',component:bookseccion},
+        {path: '/book/:id',component:bookseccion},
         {path: '/profile/:id',component:profile},
+        {path: '/new/book',component:InsertarLibro},
+        {path: '/show/books',component:listarlibros},
+        {path: '/show/category',component:ListarCategorias},
+        {path: '/new/category',component:InsertarCategoria},
+        {path: '/edit/categoria/:id',component:EditarCategoria, name:'editar_categoria'},
+        {path: '/edit/book/:id',component:ActualizarLibro, name:'editar_libro'},
     ]
 })
 export default router

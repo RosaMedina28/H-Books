@@ -7,10 +7,12 @@
 </template>
 
 <script>
+
 //import router from './components/router/index.js'
 import navbarc from "./components/Vue/Navbar-component.vue";
 //import mainpage from "./components/Vue/MainPage.vue";
 import footerc from "./components/Vue/Footer-component.vue";
+
 
 export default {
   name: "App",
