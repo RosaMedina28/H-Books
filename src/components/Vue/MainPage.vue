@@ -16,15 +16,21 @@
                     :autoplay="true"
                     :duration="3500"
                 >
-                    <vueper-slide class v-for="slide in slides" :key="slide">
+                    <vueper-slide class v-for="libro in libros" :key="libro">
                         <template #content>
                             <div class="card-book col-md-9 col-sm-4 col-xs-2">
-                                <img @click="alertT(slide.title)"
-                                :src="slide?.image" class="img-card" />
+                                <img
+                                    @click="alertT(libro?.title)"
+                                    :src="urlImg + libro?.imagen"
+                                    class="img-card"
+                                />
                                 <div class="row align-items-start mt-2">
-                                    <b @click="alertT(slide.title)"
-                                    class="letter-page book col-md-9">{{ slide.title }}</b>
-                                    <img @click="alertT(slide.title)"
+                                    <b
+                                        @click="alertT(libro?.titulo)"
+                                        class="letter-page book col-md-9"
+                                    >{{ libro?.titulo }}</b>
+                                    <img
+                                        @click="addBook(libro.id)"
                                         class="col-md-2"
                                         style="width:25%;"
                                         src="@/assets/img/icono_fav.jpg"
@@ -37,13 +43,18 @@
 
                 <!-- mas leidos xs -->
                 <div class="bloque-xs bloque-xs-div col-md-9 col-sm-4 col-xs-10 m-xs-4">
-                    <img @click="alertT(slides[0]?.title)"
-                    :src="slides[0]?.image" class="img-card p-4" />
+                    <img
+                        @click="alertT(libros[0]?.titulo)"
+                        :src="urlImg + libros[0]?.imagen"
+                        class="img-card p-4"
+                    />
                     <div class="mb-4 mt-2 col-xs-10">
-                        <b @click="alertT(slides[0]?.title)"
-                        class="letter-page col-md-9 p-0 m-xs-0">
+                        <b
+                            @click="alertT(libros[0]?.titulo)"
+                            class="letter-page col-md-9 p-0 m-xs-0"
+                        >
                             {{
-                                slides[0]?.title
+                                libros[0]?.titulo
                             }}
                         </b>
                     </div>
@@ -51,11 +62,11 @@
 
                 <!-- Cita -->
                 <div class="cita-div col-12 m-0 row align-item-start">
-                    <img :src="cita?.image" class="img-cita col-md-3 col-xs-10 col-sm-3 p-0" />
+                    <img :src="urlImg + cita?.imagen" class="img-cita col-md-3 col-xs-10 col-sm-3 p-0" />
                     <div class="col m-auto p-2">
                         <p
                             class="letter-page text-light fs-4 col-md-8 col-sm-9 col-xs-10 m-auto"
-                        >{{ cita?.cita }}</p>
+                        >“{{ cita?.cita }}”</p>
                         <p
                             class="letter-page text-right text-light fs-4 col-md-8 col-sm-9 col-xs-10 m-auto"
                         >{{ cita?.titulo }}, {{ cita?.autor }}</p>
@@ -63,36 +74,74 @@
                 </div>
 
                 <!-- mas categorias -->
-                <h2 class="title-main mt-4 container-main">Recomendaciones</h2>
+                <h2 class="title-main mt-4 container-main"
+                v-if="categories.length > 0">Recomendaciones</h2>
+                <h2 v-else>
+                    No hay mas libros
+                </h2>
                 <div v-for="category in categories" v-bind:key="category">
-                    <div class="d-flex flex-row mb-3">
-                        <div class="p-2 bd-highlight">
-                            <h2 class="title-main mt-4 container-main">{{ category?.category }}</h2>
+                    <div class="d-flex flex-row mb-3 ms-4" v-if="category?.libros.length > 0">
+                        <div class="p-2 bd-highlight col-mb-5 text-nowrap">
+                            <h2 class="title-main mt-4 container-main">{{ category?.categoria }}</h2>
                         </div>
                         <div class="p-2 mt-5">
-                            <a href="" class="text-decoration-none">mas +</a>
+                            <a href class="text-decoration-none">mas +</a>
                         </div>
                     </div>
+                    <!-- menos de 4 libros-->
+                    <div class="bloque" v-if="category.libros.length <= 3"
+                    style="width:100%;display:flex;">
+                        <div class="m-4 bloque" v-for="cat in category.libros" :key="cat">
+                            <div class="card-book" style="float:left;">
+                                    <img
+                                        :src="urlImg + cat?.imagen"
+                                        class="img-card"
+                                        @click="alertT(cat.titulo)"
+                                    />
+                                    <div class="row align-items-start mt-2">
+                                        <b
+                                            class="letter-page book col-md-9"
+                                            @click="alertT(cat.titulo)"
+                                        >{{ cat.titulo }}</b>
+                                        <a style="width:55px;">
+                                            <img
+                                                style="width:100%;"
+                                                @click="addBook(cat.id)"
+                                                src="@/assets/img/icono_fav.jpg"
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <!-- mas de 4 libros-->
                     <vueper-slides
+                    v-if="category.libros.length >= 4"
                         class="bloque no-shadow carousel-class col-md-10"
                         :visible-slides="4"
                         :slide-ratio="1 / 2.7"
                         :dragging-distance="70"
-                        :autoplay="true"
-                        :duration="3500"
+                        :autoplay="((category.libros.length > 4) ? true:false)"
                     >
-                        <vueper-slide class v-for="cat in category.books" :key="cat">
+                        <vueper-slide class v-for="cat in category.libros" :key="cat">
                             <template #content>
                                 <div class="card-book">
-                                    <img :src="cat?.image" class="img-card" 
-                                    @click="alertT(cat.title)"/>
+                                    <img
+                                        :src="urlImg + cat?.imagen"
+                                        class="img-card"
+                                        @click="alertT(cat.titulo)"
+                                    />
                                     <div class="row align-items-start mt-2">
-                                        <b class="letter-page book col-md-9"
-                                        @click="alertT(cat.title)">{{ cat.title }}</b>
+                                        <b
+                                            class="letter-page book col-md-9"
+                                            @click="alertT(cat.titulo)"
+                                        >{{ cat.titulo }}</b>
                                         <a style="width:55px;">
-                                            <img style="width:100%;"
-                                            @click="alertT(cat.title)"
-                                            src="@/assets/img/icono_fav.jpg"/>
+                                            <img
+                                                style="width:100%;"
+                                                @click="addBook(cat.id)"
+                                                src="@/assets/img/icono_fav.jpg"
+                                            />
                                         </a>
                                     </div>
                                 </div>
@@ -100,13 +149,18 @@
                         </vueper-slide>
                     </vueper-slides>
                     <!-- mas categorias xs-->
-                    <div class="bloque-xs bloque-xs-div col-md-9 col-sm-4 col-xs-10 m-xs-4">
-                        <img :src="category.books[0]?.image" @click="alertT(category.books[0]?.title)" class="img-card p-4" />
+                    <div v-if="category.libros.length > 0"
+                    class="bloque-xs bloque-xs-div col-md-9 col-sm-4 col-xs-10 m-xs-4">
+                        <img
+                            :src="urlImg + category.libros[0]?.imagen"
+                            @click="alertT(category.libros[0]?.titulo)"
+                            class="img-card p-4"
+                        />
                         <div class="mb-4 mt-2 col-xs-10">
-                            <b @click="alertT(category.books[0]?.title)"
-                            class="letter-page col-md-9 p-0 m-xs-0">
-                            {{ category.books[0]?.title }}
-                            </b>
+                            <b
+                                @click="alertT(category.libros[0]?.titulo)"
+                                class="letter-page col-md-9 p-0 m-xs-0"
+                            >{{ category.libros[0]?.titulo }}</b>
                         </div>
                     </div>
                 </div>
@@ -124,119 +178,60 @@ export default {
     components: { VueperSlides, VueperSlide },
     mounted() {
         this.getBooks()
+        this.getRecommendBooks()
+        this.getCita()
     },
     methods: {
         getBooks() {
             axios
                 .get("http://127.0.0.1:8000/api/listar/libros")
-                .then((response) => {this.libros=response.data.libros,
-                console.log(this.libros)})
+                .then((response) => {
+                    this.libros = response.data.libros
+                })
                 .catch((error) => console.log(error));
         },
-        alertT(title){
+        getRecommendBooks(){
+            axios
+            .get("http://127.0.0.1:8000/api/listar/recomendados")
+            .then((response) => {
+                this.categories = response.data.categorias
+            })
+            .catch((error) => console.log(error));
+        },
+        alertT(title) {
             console.log(title)
+        },
+        addBook(id) {
+            axios
+                .post("http://127.0.0.1:8000/api/guardar/libro",
+                    {
+                        libro_id:id
+                    },
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + this.varToken
+                        }
+                    })
+                .then((response) => { console.log(response.data),
+                 alert('libro añadido')})
+                .catch((error) => console.log(error));
+        },
+        getCita(){
+            axios
+            .get("http://127.0.0.1:8000/api/cita")
+            .then((response) =>{ 
+                this.cita = response.data.cita
+            })
+            .catch((error) => console.log(error));
         }
     },
     data() {
         return {
-            libros:[],
-            cita: {
-                image:'http://localhost:8000/api/image/prueba.jpg',
-                cita: "“Los que han muerto y se han convertido en una de esas cosas están en el infierno, sin duda, pero los supervivientes no vivimos mucho más lejos.”",
-                titulo: "Apocalipsis Z: El comienzo del fin",
-                autor: "Manel Laureiro",
-            },
-            slides: [
-                {
-                    title: "Apocalipsis: El comienzo del fin",
-                    image: require("@/assets/img/A1vC8D7458L.jpg"),
-                },
-                {
-                    title: "100 años de soledad",
-                    image: require("@/assets/img/9788439733836.jpg"),
-                },
-                {
-                    title: "El relato de un naufrago",
-                    image: require("@/assets/img/el relato.jpg"),
-                },
-                {
-                    title: "La niebla",
-                    image: require("@/assets/img/la-niebla.jpg"),
-                },
-                {
-                    title: "El arte de la guerra",
-                    image: require("@/assets/img/el-arte.jpg"),
-                },
-                {
-                    title: "Una vaca se estaciono en mi lugar",
-                    image: require("@/assets/img/una-vaca.jpg"),
-                },
-            ],
-            categories: [
-                {
-                    category: "Romance",
-                    books: [
-                        {
-                            title: "100 años de soledad",
-                            image: require("@/assets/img/9788439733836.jpg"),
-                        },
-                        {
-                            title: "El relato de un naufrago",
-                            image: require("@/assets/img/el relato.jpg"),
-                        },
-                        {
-                            title: "La niebla",
-                            image: require("@/assets/img/la-niebla.jpg"),
-                        },
-                        {
-                            title: "El arte de la guerra",
-                            image: require("@/assets/img/el-arte.jpg"),
-                        },
-                    ],
-                },
-                {
-                    category: "Accion",
-                    books: [
-                        {
-                            title: "100 años de soledad",
-                            image: require("@/assets/img/9788439733836.jpg"),
-                        },
-                        {
-                            title: "El relato de un naufrago",
-                            image: require("@/assets/img/el relato.jpg"),
-                        },
-                        {
-                            title: "La niebla",
-                            image: require("@/assets/img/la-niebla.jpg"),
-                        },
-                        {
-                            title: "El arte de la guerra",
-                            image: require("@/assets/img/el-arte.jpg"),
-                        },
-                    ],
-                },
-                {
-                    category: "Misterio",
-                    books: [
-                        {
-                            title: "100 años de soledad",
-                            image: require("@/assets/img/9788439733836.jpg"),
-                        },
-                        {
-                            title: "El relato de un naufrago",
-                            image: require("@/assets/img/el relato.jpg"),
-                        },
-                        {
-                            title: "La niebla",
-                            image: require("@/assets/img/la-niebla.jpg"),
-                        },
-                        {
-                            title: "El arte de la guerra",
-                            image: require("@/assets/img/el-arte.jpg"),
-                        },
-                    ],
-                },
-            ],
+            urlImg:"http://localhost:8000/api/image/",
+            varToken: "1|l72J1a3CXt7r3TykHerWqdWfvg4vZKZvxRejPHHB",
+            libros: [],
+            cita: {},
+            categories: [],
         };
     },
 };
@@ -266,7 +261,7 @@ export default {
     image-rendering: optimizeQuality;
 }
 .img-card {
-    image-rendering:optimizeSpeed;
+    image-rendering: optimizeSpeed;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -297,7 +292,7 @@ export default {
     background-color: #320000;
 }
 .img-cita {
-    image-rendering:optimizeSpeed;
+    image-rendering: optimizeSpeed;
     width: 100%;
     height: 100%;
     object-fit: cover;
