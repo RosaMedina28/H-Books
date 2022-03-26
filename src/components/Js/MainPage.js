@@ -1,4 +1,4 @@
 import {createApp} from 'vue';
 import mp from '../Vue/MainPage.vue';
-
-createApp(mp).mount('#main')
+import router from '../router/index.js';
+createApp(mp).use(router).mount('#main')
