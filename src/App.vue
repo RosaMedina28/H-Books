@@ -1,29 +1,8 @@
 <template>
   <div>
-    <div><navbarc/></div>
     <div><router-view></router-view></div>
-    <div><footerc/></div>
   </div>
 </template>
-
-<script>
-//import router from './components/router/index.js'
-import navbarc from "./components/Vue/Navbar-component.vue";
-//import mainpage from "./components/Vue/MainPage.vue";
-import footerc from "./components/Vue/Footer-component.vue";
-
-export default {
-  name: "App",
-  components: {
-    navbarc,
-    //mainpage,
-    footerc,
-  },
-  mounted(){
-    //router.push('/home')
-  },
-};
-</script>
 
 <style>
 #app {
@@ -47,11 +26,11 @@ export default {
     font-size: 48px;
 }
 .letter-page{
-  margin: .25rem;
   font-family: "Overpass";
   font-size: 14px;
 }
 .button-fav{
+  margin:0px;
   border: 3px solid #320000;
   color: #320000;
 }
