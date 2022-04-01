@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div><navbarc/></div>
     <div><router-view></router-view></div>
-    <div><footerc/></div>
   </div>
 </template>
 
@@ -49,11 +47,11 @@ export default {
     font-size: 48px;
 }
 .letter-page{
-  margin: .25rem;
   font-family: "Overpass";
   font-size: 14px;
 }
 .button-fav{
+  margin:0px;
   border: 3px solid #320000;
   color: #320000;
 }

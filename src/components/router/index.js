@@ -6,6 +6,9 @@ import login from '../Vue/LoginPage.vue';
 import registerpage from '../Vue/RegisterPage.vue';
 import bookseccion from '../Vue/BookSeccion.vue';
 import profile from '../Vue/ProfilePage.vue';
+import listarLibros from '../components-admin/libro/ListarLibros.vue';
+import MainC from '../Vue/MainComponent.vue';
+import App from '../../App.vue'
 
 import listarlibros from '../admin/Libro/ListarLibros.vue';
 import ActualizarLibro from '../admin/Libro/ActualizarLibro.vue';
@@ -20,8 +23,11 @@ const router = createRouter({
     history: createWebHistory(),
     routes:[
         {path: '/:catchAll(.*)',component:NotFound},
-        {path: '/',component:Main},
+        {path: '/',component:MainC,children:[
+            {path:'',component:Main}
+        ]},
         {path:'/category/:category',component:category},
+<<<<<<< HEAD
         {path: '/login',component:login},
         {path:'/register',component:registerpage},
         {path: '/book/:id',component:bookseccion},
@@ -32,6 +38,15 @@ const router = createRouter({
         {path: '/new/category',component:InsertarCategoria},
         {path: '/edit/categoria/:id',component:EditarCategoria, name:'editar_categoria'},
         {path: '/edit/book/:id',component:ActualizarLibro, name:'editar_libro'},
+=======
+        {path:'/',component:App,children:[
+            {path: '/login',component:login},
+            {path:'/register',component:registerpage},
+        ]},
+        {path: '/book/:book',component:bookseccion},
+        {path: '/profile/:id',component:profile},
+        {path: '/crud/libros/edit',component:listarLibros},
+>>>>>>> 20385a6398e25467013ebbbf47ff6f48549ff2d6
     ]
 })
 export default router
