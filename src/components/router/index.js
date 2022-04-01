@@ -16,16 +16,24 @@ const router = createRouter({
     routes:[
         {path: '/:catchAll(.*)',component:NotFound},
         {path: '/',component:MainC,children:[
-            {path:'',component:Main}
+            {path:'',component:Main,
+            beforeEnter(){
+                if(!localStorage.getItem('token')){
+                    localStorage.setItem('token',"1|l72J1a3CXt7r3TykHerWqdWfvg4vZKZvxRejPHHB")
+                    localStorage.setItem('rol','user')
+                    return {path: '/login'}
+                }
+            }},
+            {path: 'categoria/:category',component:category},
+            {path: 'libro/:book',component:bookseccion},
+            {path: 'perfil/:id',component:profile},
+            {path: 'crud/libros/edit',component:listarLibros},
         ]},
-        {path:'/category/:category',component:category},
+        //{path:'/categoria/:category',component:category},
         {path:'/',component:App,children:[
-            {path: '/login',component:login},
-            {path:'/register',component:registerpage},
+            {path: '/login',component:login,name:login},
+            {path:'/registro',component:registerpage},
         ]},
-        {path: '/book/:book',component:bookseccion},
-        {path: '/profile/:id',component:profile},
-        {path: '/crud/libros/edit',component:listarLibros},
     ]
 })
 export default router
