@@ -21,7 +21,7 @@
                             <div class="card-book col-md-9 col-sm-4 col-xs-2">
                                 <img
                                     @click="alertT(libro?.title)"
-                                    :src="urlImg + libro?.imagen"
+                                    :src="libro?.imagen"
                                     class="img-card"
                                 />
                                 <div class="row align-items-start mt-2">
@@ -45,7 +45,7 @@
                 <div class="bloque-xs bloque-xs-div col-md-9 col-sm-4 col-xs-10 m-xs-4">
                     <img
                         @click="alertT(libros[0]?.titulo)"
-                        :src="urlImg + libros[0]?.imagen"
+                        :src="libros[0]?.imagen"
                         class="img-card p-4"
                     />
                     <div class="mb-4 mt-2 col-xs-10">
@@ -62,7 +62,7 @@
 
                 <!-- Cita -->
                 <div class="cita-div col-12 m-0 row align-item-start">
-                    <img :src="urlImg + cita?.imagen" class="img-cita col-md-3 col-xs-10 col-sm-3 p-0" />
+                    <img :src="cita?.imagen" class="img-cita col-md-3 col-xs-10 col-sm-3 p-0" />
                     <div class="col m-auto p-2">
                         <p
                             class="letter-page text-light fs-4 col-md-8 col-sm-9 col-xs-10 m-auto"
@@ -94,7 +94,7 @@
                         <div class="m-4 bloque" v-for="cat in category.libros" :key="cat">
                             <div class="card-book" style="float:left;">
                                     <img
-                                        :src="urlImg + cat?.imagen"
+                                        :src="cat?.imagen"
                                         class="img-card"
                                         @click="alertT(cat.titulo)"
                                     />
@@ -127,7 +127,7 @@
                             <template #content>
                                 <div class="card-book">
                                     <img
-                                        :src="urlImg + cat?.imagen"
+                                        :src="cat?.imagen"
                                         class="img-card"
                                         @click="alertT(cat.titulo)"
                                     />
@@ -152,7 +152,7 @@
                     <div v-if="category.libros.length > 0"
                     class="bloque-xs bloque-xs-div col-md-9 col-sm-4 col-xs-10 m-xs-4">
                         <img
-                            :src="urlImg + category.libros[0]?.imagen"
+                            :src="category.libros[0]?.imagen"
                             @click="alertT(category.libros[0]?.titulo)"
                             class="img-card p-4"
                         />
@@ -177,6 +177,7 @@ import "vueperslides/dist/vueperslides.css";
 export default {
     components: { VueperSlides, VueperSlide },
     mounted() {
+        window.localStorage
         this.getBooks()
         this.getRecommendBooks()
         this.getCita()
