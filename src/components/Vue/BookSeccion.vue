@@ -1,12 +1,14 @@
+
 <template>
+    <div><navbarc/></div>
     <br>
     <div class="container">
         <div class="row">
             <h2>{{libro.titulo}}</h2>
         </div><br>
         <div class="row text-start">
-            <div class="col-lg-3 ">
-                <img v-bind:src="`/files/img/${libro.imagen}`" v-bind:alt="`${libro.titulo}`">
+            <div class="col-lg-3">
+                <img v-bind:src="`/files/img/${libro.imagen}`">
             </div>
             <div class="col-lg-9">
                 <div class="row">
@@ -46,11 +48,11 @@
 
         <div class="row">
             <div class="col-lg-3 d-grid gap-2">
-                <a href="{{libro.pdf}}" type="button" class="btn btn-danger" download>Descargar PDF</a>
+                <a v-bind:href="'/files/pdf/'+libro.pdf" type="button" class="btn btn-danger" download>Descargar PDF</a>
             </div>
 
             <div class="col-lg-3 d-grid gap-2">
-                <button type="button" @click="guardarLibro(this.$route.params.id)" class="btn btn-outline bg-brown text-white">Guardar Libro</button>
+                <button type="button" @click="cook()" class="btn btn-outline bg-brown text-white">Guardar Libro</button>
             </div>
         </div>
 
@@ -93,7 +95,9 @@ export default {
         
     },
     methods:{
-        
+        cook(){
+            this.$cookies.set('name' ,"juanjesus") 
+        },
         async getLibro(id){
             await axios.post('http://127.0.0.1:8000/api/filtrar/libro',{
                 libro_id:id
@@ -106,12 +110,12 @@ export default {
             })
         },
         async guardarLibro(id){
-            await axios.post('http://127.0.0.1:8000/api/filtrar/libro',{
+            await axios.post('http://127.0.0.1:8000/api/guardar/libro',{
                 libro_id:id,
                 user_id:id
             }).then(response=>{
-                this.libro = response.data.libro
                 
+                console.log(response.data)
             }).catch(error=>{
                 console.log(error)
                 this.libros = {}
