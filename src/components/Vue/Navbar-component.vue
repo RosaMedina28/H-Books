@@ -31,13 +31,9 @@
             &nbsp; &nbsp; &nbsp; &nbsp; Categorías &nbsp; &nbsp; &nbsp;
           </button>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Acción</a></li>
-            <li><a class="dropdown-item" href="#">Aventura</a></li>
-            <li><a class="dropdown-item" href="#">Romance</a></li>
-            <li><a class="dropdown-item" href="#">Ficción</a></li>
-            <li><a class="dropdown-item" href="#">Tecnología</a></li>
-            <li><a class="dropdown-item" href="#">Drama</a></li>
-            <li><a class="dropdown-item" href="#">Ciencia</a></li>
+              <div v-for="(categoria) in categorias" :key="categoria">
+         <li><a class="dropdown-item" v-bind:href="categoria.nombre">{{categoria.nombre}}</a></li>
+                </div>
           </ul>
         </div>
        </div>
@@ -54,15 +50,35 @@
 </nav>
   </div>
 </template>
-
 <script>
+import axios from "axios";
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+    
+    data(){
+        return {
+      categorias:[]
+        }
+    },
+    mounted: function() {
+    this.getcategorias();
+     },
+    methods:{
+       
+        async getcategorias(){
+            await axios.get('http://127.0.0.1:8000/api/listar/categorias')
+            .then(response=>{
+              this.categorias=response.data.categorias
+               console.log(response.data)
+            }).catch(error=>{
+               console.log(error)
+            
+            })
+        }
+    }
 }
 </script>
+
+
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

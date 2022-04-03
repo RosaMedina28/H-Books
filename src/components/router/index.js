@@ -6,7 +6,7 @@ import login from '../Vue/LoginPage.vue';
 import registerpage from '../Vue/RegisterPage.vue';
 import bookseccion from '../Vue/BookSeccion.vue';
 import profile from '../Vue/ProfilePage.vue';
-import listarLibros from '../components-admin/libro/ListarLibros.vue';
+import listarLibros from '../admin/Libro/ListarLibros.vue';
 import MainC from '../Vue/MainComponent.vue';
 import App from '../../App.vue'
 
@@ -27,7 +27,6 @@ const router = createRouter({
             {path:'',component:Main}
         ]},
         {path:'/category/:category',component:category},
-<<<<<<< HEAD
         {path: '/login',component:login},
         {path:'/register',component:registerpage},
         {path: '/book/:id',component:bookseccion},
@@ -38,7 +37,6 @@ const router = createRouter({
         {path: '/new/category',component:InsertarCategoria},
         {path: '/edit/categoria/:id',component:EditarCategoria, name:'editar_categoria'},
         {path: '/edit/book/:id',component:ActualizarLibro, name:'editar_libro'},
-=======
         {path:'/',component:App,children:[
             {path: '/login',component:login},
             {path:'/register',component:registerpage},
@@ -46,7 +44,6 @@ const router = createRouter({
         {path: '/book/:book',component:bookseccion},
         {path: '/profile/:id',component:profile},
         {path: '/crud/libros/edit',component:listarLibros},
->>>>>>> 20385a6398e25467013ebbbf47ff6f48549ff2d6
     ]
 })
 export default router
