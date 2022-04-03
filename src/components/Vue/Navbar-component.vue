@@ -31,23 +31,19 @@
             &nbsp; &nbsp; &nbsp; &nbsp; Categorías &nbsp; &nbsp; &nbsp;
           </button>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Acción</a></li>
-            <li><a class="dropdown-item" href="#">Aventura</a></li>
-            <li><a class="dropdown-item" href="#">Romance</a></li>
-            <li><a class="dropdown-item" href="#">Ficción</a></li>
-            <li><a class="dropdown-item" href="#">Tecnología</a></li>
-            <li><a class="dropdown-item" href="#">Drama</a></li>
-            <li><a class="dropdown-item" href="#">Ciencia</a></li>
+            <li v-for="cat in categorias" :key="cat">
+              <a class="dropdown-item" :href="/categoria/+cat.nombre">{{cat.nombre}}</a>
+            </li>
           </ul>
         </div>
        </div>
       </ul>
-      <div class="iconos">
-    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16" href="/profile">
-  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-  <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-</svg>
-      </div>
+      <a href="/profile"><div class="iconos">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+        </svg>
+      </div></a>
     </div>
   </div> 
   
@@ -56,10 +52,27 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  data() {
+    return{
+      uid:0,
+      categorias:[]
+    }
+  },
+  methods: {
+    getCategorias() {
+      axios
+      .get("http://127.0.0.1:8000/api/mostrarcategoria")
+      .then((response) => {
+        this.categorias = response.data.categorias;
+        console.log(this.categorias);
+      })
+      .catch((error) => console.log(error))
+    }
+  },
+  mounted(){
+    this.getCategorias()
   }
 }
 </script>
