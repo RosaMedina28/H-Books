@@ -6,5 +6,9 @@ import 'animate.css';
 import VueCookies from 'vue-cookies';
 import "bootstrap/dist/css/bootstrap.min.css";
 
-createApp(App).use(router).mount('#app')
-App.use(VueCookies);
+createApp(App).use(router,VueCookies).mount('#app')
+//App.use(VueCookies);
+//import firebase from 'firebase/compat/app';
+
+// Initialize Firebase
+//export const app = initializeApp(firebaseConfig);
