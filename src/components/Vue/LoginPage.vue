@@ -10,39 +10,38 @@
                <div class="logo">
                <img src="../../assets/hh.png" class="card-img-top" width="10px" height="">
                </div>
-                  <div class="form-group">
-                     <input type="email" name="email" id="email" formControlName="email"  
-                     class="form-control"  placeholder="Ingrese su correo" required
-                     v-model="user.email">
+               <form @submit.prevent="login">
+  <div class="form-group">
+                     <input type="email" name="email" id="email" v-model="email" formControlName="email"  class="form-control"  placeholder="Ingrese su correo" required>
                   </div>
                   <br>
                   <div class="form-group">
-                     <input type="password" name="password" id="password" formControlName="password"  
-                     class="form-control"  placeholder="Ingrese su contraseña" required
-                     v-model="user.password">
+                     <input type="password" name="password" id="password" v-model="pass" formControlName="password"  class="form-control"  placeholder="Ingrese su contraseña" required>
                   </div>
                   <br>
                   <div class="color">
          
-                  <div class="form-group" >
-                     <button type="submit" class=" btn btn-block mybtn bg-yellow tx-tfm" 
-                     style="color: #ffff">Iniciar sesion</button>
+                  <div class="form-group d-grid gap-2">
+                     <button type="submit" class="btn   btn-block"  style="color: #ffff">Iniciar sesion</button>
                   </div>
+                  </div>
+               </form>
                   </div>
                   <br>
                   <div class="deco">
                   <div class="form-group text-center">
-                     <a class="text-black link" routerLink="/registro" style="color: #320000"><b>Registrarme</b></a>
+                     <a class="text-black link" href="/register" style="color: #320000"><b>Registrarme</b></a>
                   </div>
                   </div>
                   <br>
                </div>
             </form>
          </div>
+         <br>
       </div>
    </div>
-   <br>
-</div>
+   
+
     
 </template>
 
@@ -96,7 +95,7 @@ margin-left: auto;
 
 margin-right: auto;
 }
-.color
+.color 
 {
    background-color:#320000 ;
    color: #ffff;
@@ -105,3 +104,43 @@ margin-right: auto;
    text-decoration: underline;
 }
 </style>
+
+<script>
+import axios from "axios";
+import VueCookies from 'vue-cookies'
+export default {
+    
+    data(){
+        return {
+            user:{},
+            email:"",
+            pass:""
+        }
+    },
+    methods:{
+       
+        async login(){
+           
+            await axios.post('http://127.0.0.1:8000/api/login',{
+                email:this.email,
+                password:this.pass
+            }).then(response=>{
+           
+
+                  if(response.data.status){
+                     VueCookies.set('token',response.data.token) 
+                     alert("Bienvenido") 
+                     this.$router.push('Main')
+                 //mandar al login
+               }
+               else{
+                  alert("Verifique su correo o password")
+               }
+            }).catch(error=>{
+               console.log(error)
+                alert("Verifique su correo o password")
+            })
+        },
+    }
+}
+</script>

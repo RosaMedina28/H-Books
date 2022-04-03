@@ -32,6 +32,7 @@
   right: 0;
   width: 100%;
   color: #fff;
+  
 }
 .text-left{
   text-align: start;

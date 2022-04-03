@@ -52,7 +52,7 @@
             </div>
 
             <div class="col-lg-3 d-grid gap-2">
-                <button type="button" @click="cook()" class="btn btn-outline bg-brown text-white">Guardar Libro</button>
+                <button type="button" @click="guardarLibro()" class="btn btn-outline bg-brown text-white">Guardar Libro</button>
             </div>
         </div>
 
@@ -78,47 +78,71 @@
 </template>
 
 <script>
+import VueCookies from 'vue-cookies'
 import axios from "axios";
 export default {
-    
     data(){
         return {
             libro:{},
+            user:{}
         }
     },
     mounted(){
         if(this.$route.params.id){
             this.getLibro(this.$route.params.id)
         }else{
-            //404
+            alert("Libro no encontrado")
         }
         
     },
     methods:{
-        cook(){
-            this.$cookies.set('name' ,"juanjesus") 
+        getToken(){
+            return VueCookies.get("token") 
         },
         async getLibro(id){
             await axios.post('http://127.0.0.1:8000/api/filtrar/libro',{
                 libro_id:id
             }).then(response=>{
                 this.libro = response.data.libro
-                console.log(this.libro.imagen)
             }).catch(error=>{
                 console.log(error)
                 this.libros = {}
             })
         },
-        async guardarLibro(id){
-            await axios.post('http://127.0.0.1:8000/api/guardar/libro',{
-                libro_id:id,
-                user_id:id
+        async check(){
+            await axios.get('http://127.0.0.1:8000/api/check',{
+                headers:{
+                    'Authorization': `Bearer ${this.getToken()}` 
+                },
             }).then(response=>{
-                
-                console.log(response.data)
+                if(response.data.status){
+                    this.user = response.data.user
+                }else{
+                    alert("Algo salio mal con su session")
+                }
             }).catch(error=>{
                 console.log(error)
-                this.libros = {}
+                alert("Algo salio mal con su session")
+            })
+        },
+        async guardarLibro(){
+            await this.check()
+            await axios.post('http://127.0.0.1:8000/api/guardar/libro',{
+                libro_id:this.libro.id,
+                user_id:this.user.id
+            },{
+                headers:{
+                    'Authorization': `Bearer ${this.getToken()}` 
+                },
+            }).then(response=>{
+                if(response.data.status){
+                    alert(response.data.message)
+                }else{
+                    alert("Algo salio mal")
+                }
+            }).catch(error=>{
+                console.log(error)
+                alert("Algo salio mal")
             })
         },
     }
