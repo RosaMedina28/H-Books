@@ -56,6 +56,8 @@
     background-image: url("../../assets/fondo.jpg");
     background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
 }
 
 .link{
