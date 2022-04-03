@@ -80,7 +80,6 @@
 <script>
 import axios from "axios";
 export default {
-    
     data(){
         return {
             libro:{},
@@ -96,7 +95,7 @@ export default {
     },
     methods:{
         cook(){
-            this.$cookies.set('name' ,"juanjesus") 
+            this.$cookies.set('name' ,"juanjesus",'1d') 
         },
         async getLibro(id){
             await axios.post('http://127.0.0.1:8000/api/filtrar/libro',{
