@@ -36,6 +36,7 @@
                   <br>
             </div>
          </div>
+         <br>
       </div>
    </div>
    
@@ -75,12 +76,12 @@ margin-right: auto;
 
 <script>
 import axios from "axios";
+import VueCookies from 'vue-cookies'
 export default {
     
     data(){
         return {
             user:{},
-            token:"",
             email:"",
             pass:""
         }
@@ -88,6 +89,7 @@ export default {
     methods:{
        
         async login(){
+           
             await axios.post('http://127.0.0.1:8000/api/login',{
                 email:this.email,
                 password:this.pass
@@ -95,8 +97,8 @@ export default {
            
 
                   if(response.data.status){
-                      this.token = response.data.token
-                 alert("Bienvenido") 
+                     VueCookies.set('token',response.data.token) 
+                     alert("Bienvenido") 
                      this.$router.push('Main')
                  //mandar al login
                }
