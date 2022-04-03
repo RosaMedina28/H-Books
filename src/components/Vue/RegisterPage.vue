@@ -10,32 +10,31 @@
                <div class="logo">
                <img src="../../assets/hh.png" class="card-img-top" width="10px" height="">
                </div>
-                <div class="form-group">
-                     <input type="email" name="email" id="email" formControlName="email"  class="form-control"  placeholder="Ingrese su Usuario" required>
+               <form @submit.prevent="registro">
+                   <div class="form-group">
+                     <input type="name" name="name" id="name" v-model="user" formControlName="email"  class="form-control"  placeholder="Ingrese su Usuario" required>
                   </div>
                   <br>
                   <div class="form-group">
-                     <input type="email" name="email" id="email" formControlName="email"  class="form-control"  placeholder="Ingrese su Correo" required>
+                     <input type="email" name="email" v-model="email" id="email" formControlName="email"  class="form-control"  placeholder="Ingrese su Correo" required>
                   </div>
                   <br>
                   <div class="form-group">
-                     <input type="password" name="password" id="password" formControlName="password"  class="form-control"  placeholder="Ingrese su contraseña" required>
+                     <input type="password" v-model="pass" name="password" id="password" formControlName="password"  class="form-control"  placeholder="Ingrese su contraseña" required>
                   </div>
                   <br>
-                  <div class="form-group">
-                     <input type="password" name="password" id="password" formControlName="password"  class="form-control"  placeholder="Confirme Contraseña" required>
-                  </div>
                   <br>
                   <div class="color">
          
-                  <div class="form-group">
-                     <button type="submit" class=" btn btn-block mybtn bg-yellow tx-tfm" style="color: #ffff">Iniciar sesion</button>
+                  <div class="form-group d-grid gap-2">
+                     <button type="submit" class=" btn btn-block mybtn tx-tfm" style="color: #ffff">Registrarme</button>
                   </div>
                   </div>
+               </form>
                   <br>
                   <div class="deco">
                   <div class="form-group text-center">
-                     <a class="text-black link" routerLink="/registro" style="color: #320000"><b>Registrarme</b></a>
+                     <a class="text-black link"  href="/login" style="color: #320000"> <b>Iniciar Sesión</b></a>
                   </div>
                   </div>
                   <br>
@@ -77,3 +76,40 @@ margin-right: auto;
    text-decoration: underline;
 }
 </style>
+<script>
+import axios from "axios";
+export default {
+    
+    data(){
+        return {
+         user:"",
+         email:"",
+         pass:""
+        }
+    },
+    methods:{
+       
+        async registro(){
+           console.log(this.user)
+            await axios.post('http://127.0.0.1:8000/api/registro',{
+               nombre:this.user,
+               email:this.email,
+               password:this.pass,
+               rol:"user"
+            }).then(response=>{
+               console.log(response.data.status)
+               if(response.data.status){
+                 alert("Registro exitoso") 
+                 //mandar al login
+               }
+               else{
+                  alert("Registro fallido")
+               }
+            }).catch(error=>{
+               console.log(error)
+            
+            })
+        },
+    }
+}
+</script>
