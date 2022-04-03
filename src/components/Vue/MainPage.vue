@@ -171,13 +171,13 @@
 
 <script>
 import axios from "axios";
+import VueCookies from 'vue-cookies';
 import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
 
 export default {
     components: { VueperSlides, VueperSlide },
     mounted() {
-        window.localStorage
         this.getBooks()
         this.getRecommendBooks()
         this.getCita()
@@ -210,7 +210,7 @@ export default {
                     },
                     {
                         headers: {
-                            Authorization: 'Bearer ' + this.varToken
+                            Authorization: 'Bearer ' + this.token
                         }
                     })
                 .then((response) => { console.log(response.data),
@@ -228,8 +228,7 @@ export default {
     },
     data() {
         return {
-            urlImg:"http://localhost:8000/api/image/",
-            varToken: "1|l72J1a3CXt7r3TykHerWqdWfvg4vZKZvxRejPHHB",
+            token:VueCookies.get('user').token,
             libros: [],
             cita: {},
             categories: [],
