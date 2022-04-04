@@ -5,8 +5,10 @@ import "bootstrap";
 import 'animate.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import VueCookies from 'vue-cookies';
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
-createApp(App).use(router,VueCookies).mount('#app')
+createApp(App).use(router,VueSweetalert2,VueCookies).mount('#app')
 //App.use(VueCookies);
 //import firebase from 'firebase/compat/app';
 

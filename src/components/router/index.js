@@ -33,7 +33,7 @@ const router = createRouter({
                 { path: '/:catchAll(.*)', component: NotFound },
                 { path: '', name: 'home', component: Main },
                 { path: 'categoria/:category', component: category },
-                { path: 'libro/:book', component: bookseccion },
+                { path: 'libro/:id', component: bookseccion, name: 'libro' },
                 {
                     path: 'perfil/:id', component: profile, beforeEnter() {
                         let user = VueCookies.get('user')
@@ -44,14 +44,14 @@ const router = createRouter({
                         }
                     }
                 },
-                { path: '/new/book', component: InsertarLibro, name:'insertar_libro'},
-                { path: '/show/books', component: listarlibros, name: 'listar_libros'},
+                { path: '/nuevo/libro', component: InsertarLibro, name:'insertar_libro'},
+                { path: '/listar/libro', component: listarlibros, name: 'listar_libros'},
                 { path: '/show/category', component: ListarCategorias, name: 'listar_categorias'},
                 { path: '/show/cita', component: ListarCitas, name: 'listar_citas'},
                 { path: '/new/category', component: InsertarCategoria, name: 'insertar_categoria'},
                 { path: '/new/cita', component: InsertarCitas, name: 'insertar_citas'},
                 { path: '/edit/categoria/:id', component: EditarCategoria, name: 'editar_categoria' },
-                { path: '/edit/book/:id', component: ActualizarLibro, name: 'editar_libro' },
+                { path: '/editar/libro/:id', component: ActualizarLibro, name: 'editar_libro' },
                 { path: '/edit/cita/:id', component: ActualizarCitas, name: 'editar_cita' },
                 //{path: 'crud/libros/edit',component:listarLibros},
             ]
