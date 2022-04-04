@@ -88,11 +88,9 @@ export default {
         }
     },
     mounted(){
-        if(this.$route.params.id){
+        
             this.getLibro(this.$route.params.id)
-        }else{
-            alert("Libro no encontrado")
-        }
+        
         
     },
     methods:{

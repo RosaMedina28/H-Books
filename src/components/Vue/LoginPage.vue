@@ -5,13 +5,13 @@
    <div class="container">
       <div class="row justify-content-center " >
          <div class="col-lg-5 justify-content-center" style="background-color:white; border-radius: 20px; ">
-            <form @submit.prevent="login()">
+            
             <div class="offset-lg-2 col-lg-8 justify-content-center">
-               <div class="logo">
-               <img src="../../assets/hh.png" class="card-img-top" width="10px" height="">
+               <div class="logo animate__animated animate__bounceInDown" >
+               <img  src="../../assets/hh.png" class="card-img-top" width="10px" height="">
                </div>
                <form @submit.prevent="login">
-  <div class="form-group">
+                  <div class="form-group">
                      <input type="email" name="email" id="email" v-model="email" formControlName="email"  class="form-control"  placeholder="Ingrese su correo" required>
                   </div>
                   <br>
@@ -22,7 +22,7 @@
                   <div class="color">
          
                   <div class="form-group d-grid gap-2">
-                     <button type="submit" class="btn   btn-block"  style="color: #ffff">Iniciar sesion</button>
+                     <button type="submit" class="btn btn-block button"  style="color: #ffff">Iniciar sesion</button>
                   </div>
                   </div>
                </form>
@@ -30,12 +30,12 @@
                   <br>
                   <div class="deco">
                   <div class="form-group text-center">
-                     <a class="text-black link" href="/register" style="color: #320000"><b>Registrarme</b></a>
+                     <a class="text-black link" href="/registro" style="color: #320000"><b>Registrarme</b></a>
                   </div>
                   </div>
                   <br>
                </div>
-            </form>
+            
          </div>
          <br>
       </div>
@@ -45,38 +45,14 @@
     
 </template>
 
-<script>
-import axios from "axios";
-import VueCookies from 'vue-cookies';
-   export default{
-      data(){
-         return{
-            user:{
-               email:'',
-               password:''
-            }
-         }
-      },
-      methods:{
-         login(){
-            axios
-            .post('http://localhost:8000/api/login',{
-               email:this.user.email,
-               password:this.user.password
-            })
-            .then((data)=>{
-               const user = data.data;
-               VueCookies.set('user',user);
-               console.log(user)
-               this.$router.push({path:"/"})
-            })
-            .catch((error) => {alert('email o contraseña incorrectas'),console.log(error)});
-         }
-      }
-   }
-</script>
+
 
 <style>
+
+.animate__animated.animate__bounceInDown {
+  --animate-duration: 2s;
+}
+
 .background {
     background-image: url("../../assets/fondo.jpg");
     background-size: cover;
@@ -106,6 +82,7 @@ margin-right: auto;
 </style>
 
 <script>
+import Swal from 'sweetalert2'
 import axios from "axios";
 import VueCookies from 'vue-cookies'
 export default {
@@ -118,27 +95,38 @@ export default {
         }
     },
     methods:{
-       
-        async login(){
-           
-            await axios.post('http://127.0.0.1:8000/api/login',{
-                email:this.email,
-                password:this.pass
-            }).then(response=>{
-           
 
+      async login(){
+            
+            await axios.post('http://127.0.0.1:8000/api/login',{
+               email:this.email,
+               password:this.pass
+            }).then(response=>{
                   if(response.data.status){
+                     
                      VueCookies.set('token',response.data.token) 
-                     alert("Bienvenido") 
+                     Swal.fire(
+                        'Bienvenido a H-books',
+                        '',
+                        'success'
+                     )
                      this.$router.push('Main')
                  //mandar al login
                }
                else{
-                  alert("Verifique su correo o password")
+                  Swal.fire(
+                        'Algo salio mal',
+                        'Vuelva intentarlo mas tarde',
+                        'error'
+                     )
                }
             }).catch(error=>{
                console.log(error)
-                alert("Verifique su correo o password")
+               Swal.fire(
+                        'Correo o contraseña incorrecto',
+                        '',
+                        'error'
+               )
             })
         },
     }

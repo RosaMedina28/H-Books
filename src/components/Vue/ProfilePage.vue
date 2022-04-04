@@ -1,8 +1,8 @@
 <template>
   <div>
     <img src="@/assets/R.png" style="width: 200px" class="m-4"/>
-    <transition>
-      <div v-if="!show">
+    
+      <div >
         <h3 class="letter-main"><b>{{nombre}}</b></h3>
         <p class="letter-main">descripcion</p>
         <button class="btn btn-success">Editar</button>
@@ -12,7 +12,7 @@
           <input type="text" :value="nombre"/>
         </form>
       </div>
-    </transition>
+    
     <div>
       <p class="letter-main text-start ms-4">Contenido guardado:</p>
       <div

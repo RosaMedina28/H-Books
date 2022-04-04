@@ -1,6 +1,12 @@
 <template>
     <div class="container">
+        <br>
         <div class="row">
+            <div class="offset-lg-9 d-grid  col-lg-3">
+                <a href="/nuevo/libro" class="btn btn-brown white" type="button">Agregar libro</a>
+            </div>
+        </div>
+        <div class="row py-4">
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -29,7 +35,8 @@
                         <td>
                             <button type="button" @click="deleteLibro(libro.id)" class="btn btn-danger btn-block">Eliminar</button>
                             
-                            <router-link :to='{name:"editar_libro",params:{id:libro.id}}' class="btn btn-warning btn-block" style="margin-top:10px;">Editar</router-link>
+                            <router-link :to='{name:"editar_libro",params:{id:libro.id}}' class="btn btn-warning btn-block" >Editar</router-link>
+                            <router-link :to='{name:"libro",params:{id:libro.id}}' class="btn btn-brown white btn-block" >Ver</router-link>
                         </td>
                     </tr>
                 </tbody>
@@ -80,3 +87,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.btn-brown{
+    background-color: #320000;
+}
+.white{
+    color:#fff;
+}
+</style>

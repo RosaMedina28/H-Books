@@ -29,7 +29,7 @@ const router = createRouter({
             path: '/', component: MainC, children: [
                 { path: '', name:'home',component: Main },
                 { path: 'categoria/:category', component: category },
-                { path: 'libro/:book', component: bookseccion },
+                { path: 'libro/:id', component: bookseccion,name: 'libro' },
                 { path: 'perfil/:id', component: profile, beforeEnter() {
                     let user  = VueCookies.get('user')
                     if (!user) {
@@ -41,12 +41,12 @@ const router = createRouter({
                 //{path: 'crud/libros/edit',component:listarLibros},
             ]
         },
-        { path: '/new/book', component: InsertarLibro },
-        { path: '/show/books', component: listarlibros },
+        { path: '/nuevo/libro', component: InsertarLibro },
+        { path: '/listar/libros', component: listarlibros },
         { path: '/show/category', component: ListarCategorias },
         { path: '/new/category', component: InsertarCategoria },
         { path: '/edit/categoria/:id', component: EditarCategoria, name: 'editar_categoria' },
-        { path: '/edit/book/:id', component: ActualizarLibro, name: 'editar_libro' },
+        { path: '/editar/libro/:id', component: ActualizarLibro, name: 'editar_libro' },
 
         {
             path: '/', component: App, children: [
