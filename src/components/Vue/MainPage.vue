@@ -7,7 +7,6 @@
             <div>
                 <!-- mas leidos -->
                 <h2 class="title-main mt-4 container-main">Mas leidos</h2>
-
                 <vueper-slides
                     class="bloque no-shadow carousel-class col-md-10"
                     :visible-slides="4"
@@ -29,12 +28,22 @@
                                         @click="alertT(libro?.titulo)"
                                         class="letter-page book col-md-9"
                                     >{{ libro?.titulo }}</b>
-                                    <img
+                                    <Transition mode="out-in">
+                                        <img
+                                        v-if="state === 'like'"
                                         @click="addBook(libro.id)"
                                         class="col-md-2"
                                         style="width:25%;"
                                         src="@/assets/img/icono_fav.jpg"
-                                    />
+                                        />
+                                        <img
+                                        v-else-if="state === 'dislike'"
+                                        @click="addBook(libro.id)"
+                                        class="col-md-2"
+                                        style="width:25%;"
+                                        src="@/assets/img/icono_dislike.png"
+                                        />
+                                    </Transition>
                                 </div>
                             </div>
                         </template>
@@ -116,6 +125,7 @@
                     </div>
                     <!-- mas de 4 libros-->
                     <vueper-slides
+                    lazy lazy-load-on-drag
                     v-if="category.libros.length >= 4"
                         class="bloque no-shadow carousel-class col-md-10"
                         :visible-slides="4"
@@ -181,6 +191,7 @@ export default {
         this.getBooks()
         this.getRecommendBooks()
         this.getCita()
+        if(VueCookies.get('user')){this.token = VueCookies.get('user').token}
     },
     methods: {
         getBooks() {
@@ -203,7 +214,8 @@ export default {
             console.log(title)
         },
         addBook(id) {
-            axios
+            if(this.token){
+                axios
                 .post("http://127.0.0.1:8000/api/guardar/libro",
                     {
                         libro_id:id
@@ -216,6 +228,9 @@ export default {
                 .then((response) => { console.log(response.data),
                  alert('libro añadido')})
                 .catch((error) => console.log(error));
+            }else{
+                alert('Necesita iniciar sesion para poder guardar un libro');
+            }
         },
         getCita(){
             axios
@@ -228,7 +243,8 @@ export default {
     },
     data() {
         return {
-            token:VueCookies.get('user').token,
+            state:'like',
+            token:'',
             libros: [],
             cita: {},
             categories: [],
