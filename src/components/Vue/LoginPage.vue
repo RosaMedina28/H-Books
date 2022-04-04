@@ -5,7 +5,7 @@
    <div class="container">
       <div class="row justify-content-center " >
          <div class="col-lg-5 justify-content-center" style="background-color:white; border-radius: 20px; ">
-            <form @submit.prevent="login()">
+            
             <div class="offset-lg-2 col-lg-8 justify-content-center">
                <div class="logo">
                <img src="../../assets/hh.png" class="card-img-top" width="10px" height="">
@@ -34,8 +34,7 @@
                   </div>
                   </div>
                   <br>
-               </div>
-            </form>
+            </div>
          </div>
          <br>
       </div>
@@ -45,44 +44,14 @@
     
 </template>
 
-<script>
-import axios from "axios";
-import VueCookies from 'vue-cookies';
-   export default{
-      data(){
-         return{
-            user:{
-               email:'',
-               password:''
-            }
-         }
-      },
-      methods:{
-         login(){
-            axios
-            .post('http://localhost:8000/api/login',{
-               email:this.user.email,
-               password:this.user.password
-            })
-            .then((data)=>{
-               const user = data.data;
-               VueCookies.set('user',user);
-               console.log(user)
-               this.$router.push({path:"/"})
-            })
-            .catch((error) => {alert('email o contraseña incorrectas'),console.log(error)});
-         }
-      }
-   }
-</script>
-
 <style>
+
+
+
 .background {
     background-image: url("../../assets/fondo.jpg");
     background-size: cover;
     background-repeat: no-repeat;
-    background-attachment: fixed;
-    height: 100vh;
 }
 
 .link{
@@ -125,12 +94,10 @@ export default {
                 email:this.email,
                 password:this.pass
             }).then(response=>{
-           
-
                   if(response.data.status){
-                     VueCookies.set('token',response.data.token) 
+                     VueCookies.set('user',response.data) 
                      alert("Bienvenido") 
-                     this.$router.push('Main')
+                     this.$router.push({path:'/'})
                  //mandar al login
                }
                else{
