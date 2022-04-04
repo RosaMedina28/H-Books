@@ -7,7 +7,6 @@
             <div>
                 <!-- mas leidos -->
                 <h2 class="title-main mt-4 container-main">Mas leidos</h2>
-
                 <vueper-slides
                     class="bloque no-shadow carousel-class col-md-10"
                     :visible-slides="4"
@@ -21,7 +20,7 @@
                             <div class="card-book col-md-9 col-sm-4 col-xs-2">
                                 <img
                                     @click="alertT(libro?.title)"
-                                    :src="urlImg + libro?.imagen"
+                                    :src="libro?.imagen"
                                     class="img-card"
                                 />
                                 <div class="row align-items-start mt-2">
@@ -29,12 +28,22 @@
                                         @click="alertT(libro?.titulo)"
                                         class="letter-page book col-md-9"
                                     >{{ libro?.titulo }}</b>
-                                    <img
+                                    <Transition mode="out-in">
+                                        <img
+                                        v-if="state === 'like'"
                                         @click="addBook(libro.id)"
                                         class="col-md-2"
                                         style="width:25%;"
                                         src="@/assets/img/icono_fav.jpg"
-                                    />
+                                        />
+                                        <img
+                                        v-else-if="state === 'dislike'"
+                                        @click="addBook(libro.id)"
+                                        class="col-md-2"
+                                        style="width:25%;"
+                                        src="@/assets/img/icono_dislike.png"
+                                        />
+                                    </Transition>
                                 </div>
                             </div>
                         </template>
@@ -45,7 +54,7 @@
                 <div class="bloque-xs bloque-xs-div col-md-9 col-sm-4 col-xs-10 m-xs-4">
                     <img
                         @click="alertT(libros[0]?.titulo)"
-                        :src="urlImg + libros[0]?.imagen"
+                        :src="libros[0]?.imagen"
                         class="img-card p-4"
                     />
                     <div class="mb-4 mt-2 col-xs-10">
@@ -62,7 +71,7 @@
 
                 <!-- Cita -->
                 <div class="cita-div col-12 m-0 row align-item-start">
-                    <img :src="urlImg + cita?.imagen" class="img-cita col-md-3 col-xs-10 col-sm-3 p-0" />
+                    <img :src="cita?.imagen" class="img-cita col-md-3 col-xs-10 col-sm-3 p-0" />
                     <div class="col m-auto p-2">
                         <p
                             class="letter-page text-light fs-4 col-md-8 col-sm-9 col-xs-10 m-auto"
@@ -94,7 +103,7 @@
                         <div class="m-4 bloque" v-for="cat in category.libros" :key="cat">
                             <div class="card-book" style="float:left;">
                                     <img
-                                        :src="urlImg + cat?.imagen"
+                                        :src="cat?.imagen"
                                         class="img-card"
                                         @click="alertT(cat.titulo)"
                                     />
@@ -116,6 +125,7 @@
                     </div>
                     <!-- mas de 4 libros-->
                     <vueper-slides
+                    lazy lazy-load-on-drag
                     v-if="category.libros.length >= 4"
                         class="bloque no-shadow carousel-class col-md-10"
                         :visible-slides="4"
@@ -127,7 +137,7 @@
                             <template #content>
                                 <div class="card-book">
                                     <img
-                                        :src="urlImg + cat?.imagen"
+                                        :src="cat?.imagen"
                                         class="img-card"
                                         @click="alertT(cat.titulo)"
                                     />
@@ -152,7 +162,7 @@
                     <div v-if="category.libros.length > 0"
                     class="bloque-xs bloque-xs-div col-md-9 col-sm-4 col-xs-10 m-xs-4">
                         <img
-                            :src="urlImg + category.libros[0]?.imagen"
+                            :src="category.libros[0]?.imagen"
                             @click="alertT(category.libros[0]?.titulo)"
                             class="img-card p-4"
                         />
@@ -171,6 +181,7 @@
 
 <script>
 import axios from "axios";
+import VueCookies from 'vue-cookies';
 import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
 
@@ -180,6 +191,7 @@ export default {
         this.getBooks()
         this.getRecommendBooks()
         this.getCita()
+        if(VueCookies.get('user')){this.token = VueCookies.get('user').token}
     },
     methods: {
         getBooks() {
@@ -202,19 +214,23 @@ export default {
             console.log(title)
         },
         addBook(id) {
-            axios
+            if(this.token){
+                axios
                 .post("http://127.0.0.1:8000/api/guardar/libro",
                     {
                         libro_id:id
                     },
                     {
                         headers: {
-                            Authorization: 'Bearer ' + this.varToken
+                            Authorization: 'Bearer ' + this.token
                         }
                     })
                 .then((response) => { console.log(response.data),
                  alert('libro añadido')})
                 .catch((error) => console.log(error));
+            }else{
+                alert('Necesita iniciar sesion para poder guardar un libro');
+            }
         },
         getCita(){
             axios
@@ -227,8 +243,8 @@ export default {
     },
     data() {
         return {
-            urlImg:"http://localhost:8000/api/image/",
-            varToken: "1|l72J1a3CXt7r3TykHerWqdWfvg4vZKZvxRejPHHB",
+            state:'like',
+            token:'',
             libros: [],
             cita: {},
             categories: [],

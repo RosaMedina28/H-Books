@@ -7,11 +7,11 @@
          <div class="col-lg-5 justify-content-center" style="background-color:white; border-radius: 20px; ">
             
             <div class="offset-lg-2 col-lg-8 justify-content-center">
-               <div class="logo">
-               <img src="../../assets/hh.png" class="card-img-top" width="10px" height="">
+               <div class="logo animate__animated animate__bounceInDown" >
+               <img  src="../../assets/hh.png" class="card-img-top" width="10px" height="">
                </div>
                <form @submit.prevent="login">
-  <div class="form-group">
+                  <div class="form-group">
                      <input type="email" name="email" id="email" v-model="email" formControlName="email"  class="form-control"  placeholder="Ingrese su correo" required>
                   </div>
                   <br>
@@ -22,7 +22,7 @@
                   <div class="color">
          
                   <div class="form-group d-grid gap-2">
-                     <button type="submit" class="btn   btn-block"  style="color: #ffff">Iniciar sesion</button>
+                     <button type="submit" class="btn btn-block button"  style="color: #ffff">Iniciar sesion</button>
                   </div>
                   </div>
                </form>
@@ -30,12 +30,14 @@
                   <br>
                   <div class="deco">
                   <div class="form-group text-center">
-                     <a class="text-black link" href="/register" style="color: #320000"><b>Registrarme</b></a>
+                     <a class="text-black link" href="/registro" style="color: #320000"><b>Registrarme</b></a>
                   </div>
                   </div>
                   <br>
-            </div>
+               </div>
+            
          </div>
+         <br>
       </div>
    </div>
    
@@ -43,9 +45,13 @@
     
 </template>
 
+
+
 <style>
 
-
+.animate__animated.animate__bounceInDown {
+  --animate-duration: 2s;
+}
 
 .background {
     background-image: url("../../assets/fondo.jpg");
@@ -74,38 +80,51 @@ margin-right: auto;
 </style>
 
 <script>
+import Swal from 'sweetalert2'
 import axios from "axios";
+import VueCookies from 'vue-cookies'
 export default {
     
     data(){
         return {
             user:{},
-            token:"",
             email:"",
             pass:""
         }
     },
     methods:{
-       
-        async login(){
-            await axios.post('http://127.0.0.1:8000/api/login',{
-                email:this.email,
-                password:this.pass
-            }).then(response=>{
-           
 
+      async login(){
+            
+            await axios.post('http://127.0.0.1:8000/api/login',{
+               email:this.email,
+               password:this.pass
+            }).then(response=>{
                   if(response.data.status){
-                      this.token = response.data.token
-                 alert("Bienvenido") 
-                     this.$router.push('Main')
+                     
+                     VueCookies.set('user',response.data) 
+                     Swal.fire(
+                        'Bienvenido a H-books',
+                        '',
+                        'success'
+                     )
+                     this.$router.push({path:'/'})
                  //mandar al login
                }
                else{
-                  alert("Verifique su correo o password")
+                  Swal.fire(
+                        'Algo salio mal',
+                        'Vuelva intentarlo mas tarde',
+                        'error'
+                     )
                }
             }).catch(error=>{
                console.log(error)
-                alert("Verifique su correo o password")
+               Swal.fire(
+                        'Correo o contraseña incorrecto',
+                        '',
+                        'error'
+               )
             })
         },
     }

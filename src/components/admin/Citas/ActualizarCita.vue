@@ -5,26 +5,58 @@
       <div id="placeholderAlert"></div>
     </Transition>
     <div>
-      <h2 class="brown">Editar Categoria</h2>
+      <h2 class="brown">Editar Cita</h2>
     </div>
     <br />
     <div class="row text-start justify-content-center">
       <div class="col-lg-6 bg-form-2">
         <form
-          @submit.prevent="putCategoria()"
+          @submit.prevent="putCita()"
           method="PUT"
           class="white"
           style="margin-top: 30px; margin-bottom: 30px"
         >
           <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input
-              v-model="nombre"
+            <label class="form-label">Cita</label>
+            <textarea
+              v-model="cita"
               type="text"
               class="form-control"
-              placeholder="categoria"
+              placeholder="Cita"
             />
           </div>
+          <br />
+          <input class="form-control" placeholder="Buscar Libro" v-model="query" />
+          <TransitionGroup
+            tag="ul"
+            :css="false"
+            @before-enter="onBeforeEnter"
+            @enter="onEnter"
+            @leave="onLeave"
+          >
+            <!--<li
+              v-for="(item, index) in computedList"
+              :key="item.msg"
+              :data-index="index"
+            >
+              {{ item.msg }}
+            </li>-->
+            <select
+              class="form-select my-2"
+              size="3"
+              aria-label="size 3 select example"
+              v-model="libro"
+            >
+              <option
+                :value="libro.id"
+                v-for="(libro, index) in computedList"
+                :key="index"
+                :data-index="index"
+              >
+                {{ libro.titulo }}
+              </option>
+            </select>
+          </TransitionGroup>
           <br />
           <div class="d-grid gap-2">
             <button
@@ -32,7 +64,7 @@
               id="alertbtn"
               class="btn white bg-form-1 d-grid gap-2"
             >
-              Editar Categoria
+              Editar Cita
             </button>
           </div>
         </form>
@@ -44,25 +76,55 @@
 <script>
 import axios from "axios";
 import VueCookies from "vue-cookies";
+import gsap from "gsap";
+
 export default {
   name: "EditarLibro",
   data() {
     return {
       edit: false,
       id: 0,
-      nombre: "",
-      categoria: "",
+      cita: "",
+      libro: 0,
+      libros: [],
       token: "",
+      query: "",
     };
   },
+  computed: {
+    computedList() {
+      return this.libros.filter((item) => item.titulo.toLowerCase().includes(this.query));
+    },
+  },
   methods: {
-    putCategoria() {
+    onBeforeEnter(el) {
+      el.style.opacity = 0;
+      el.style.height = 0;
+    },
+    onEnter(el, done) {
+      gsap.to(el, {
+        opacity: 1,
+        height: "1.6em",
+        delay: el.dataset.index * 0.15,
+        onComplete: done,
+      });
+    },
+    onLeave(el, done) {
+      gsap.to(el, {
+        opacity: 0,
+        height: 0,
+        delay: el.dataset.index * 0.15,
+        onComplete: done,
+      });
+    },
+    putCita() {
       axios
         .put(
-          "http://localhost:8000/api/actualizar/categoria",
+          "http://localhost:8000/api/actualizar/cita",
           {
-            categoria_id: this.id,
-            nombre: this.nombre,
+            cita_id: this.id,
+            cita: this.cita,
+            libro: this.libro,
           },
           {
             headers: {
@@ -89,21 +151,27 @@ export default {
 
             alertPlaceholder.append(wrapper);
           }
-          alert("Categoria Editada Correctamente", "primary");
+          alert("Cita Editada Correctamente", "primary");
         })
         .catch((error) => console.log(error));
     },
   },
   mounted() {
-    if (this.$route.params.nombre) {
+    if (this.$route.params.id) {
       this.id = this.$route.params.id;
     }
-    if (this.$route.params.id) {
-      this.nombre = this.$route.params.nombre;
+    if (this.$route.params.cita) {
+      this.cita = this.$route.params.cita;
     }
     if (VueCookies.get("user")) {
       this.token = VueCookies.get("user").token;
     }
+    axios
+      .get("http://127.0.0.1:8000/api/listar/libros")
+      .then((response) => {
+        this.libros = response.data.libros;
+      })
+      .catch((error) => console.log(error));
   },
 };
 </script>
