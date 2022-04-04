@@ -4,6 +4,7 @@ import router from '../src/components/router/index.js'
 import "bootstrap";
 import 'animate.css';
 import "bootstrap/dist/css/bootstrap.min.css";
+import VueCookies from 'vue-cookies';
 
 createApp(App).use(router,VueCookies).mount('#app')
 //App.use(VueCookies);
