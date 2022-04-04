@@ -1,26 +1,23 @@
 <template>
   <div>
-    <img src="@/assets/R.png" style="width: 200px" class="m-4"/>
-    <transition>
-      <div v-if="!show">
-        <h3 class="letter-main"><b>{{nombre}}</b></h3>
-        <p class="letter-main">descripcion</p>
-        <button class="btn btn-success">Editar</button>
+      <div v-show="!isLoading" class="m-4">
+        <img :src="user.imagen" style="width: 200px" class="m-4"/>
+        <h3 class="letter-page fs-4"><b>{{user.nombre}}</b></h3>
+        <p class="letter-page fs-5">{{user.descripcion}}</p>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+         class="btn btn-success">Editar</button>
       </div>
-      <div>
-        <form>
-          <input type="text" :value="nombre"/>
-        </form>
+      <div v-show="isLoading" class="spinner-border text-dark" style="width: 3rem; height: 3rem;" role="status">
       </div>
-    </transition>
-    <div>
-      <p class="letter-main text-start ms-4">Contenido guardado:</p>
+    <div v-show="!isLoading" style="width:100%;">
+      <h2 class="letter-page text-start ms-4 fs-3">Contenido guardado:</h2>
       <div
+        v-show="!isLoading"
         class="bloque"
         v-if="libros.length > 0"
-        style="width: 100%; display: flex; margin: 1rem"
+        style='width: 100%; display: inline-block; margin: 1rem;'
       >
-        <div class="m-4 bloque" v-for="cat in libros" :key="cat">
+        <div class="m-2 bloque" v-for="(cat, index) in libros" :key="cat">
           <div class="card-book" style="float: left">
             <img
               :src="cat?.imagen"
@@ -33,12 +30,42 @@
                 @click="alertT(cat.titulo)"
                 >{{ cat.titulo }}</b
               >
+                <img
+                    @click="deleteBook(cat.id,index)"
+                    class="col-md-2"
+                    style="width:25%;"
+                    src="@/assets/img/icono_dislike.png"/>
             </div>
           </div>
         </div>
       </div>
+      <div v-show="!isLoading" v-else>
+          <h3 class="title-main m-4">No hay libros guardados</h3>
+      </div>
     </div>
   </div>
+  <!-- model -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Perfil</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="PUT">
+          <!--<input type="file" class="form-control m-2"/>-->
+          <input type="text" v-model='user.nombre' class="form-control m-2" placeholder="nombre"/>
+          <textarea type="text" v-model='user.descripcion' class="form-control m-2" placeholder="descripcion"/>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" @click="updateDescripcion()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
 
 <style>
@@ -90,23 +117,88 @@ import VueCookies from 'vue-cookies';
 export default {
   data() {
     return {
-      nombre:VueCookies.get('user').nombre,
+      isLoading:false,
+      token:VueCookies.get('user').token,
+      id:VueCookies.get('user').id,
       libros: [],
+      user:{
+        imagen:'',
+        nombre:'',
+        descripcion:'',
+      }
     };
   },
   mounted() {
-    this.getBooks(VueCookies.get('user').id)
+    this.getBooks()
+    this.getInfo()
   },
   methods: {
-    getBooks(id) {
+    getBooks() {
+      this.isLoading = true
       axios
-        .get("http://127.0.0.1:8000/api/listar/favoritos/"+id)
+        .get("http://127.0.0.1:8000/api/listar/favoritos",{
+          headers:{
+            Authorization: 'Bearer ' + this.token
+          }
+        })
         .then((response) => {
           this.libros = response.data.libros;
-          console.log(this.libros);
+          this.isLoading = false
+        })
+        .catch((error) => console.log(error),this.isLoading = false);
+    },
+    updateDescripcion(){
+      axios
+        .put("http://127.0.0.1:8000/api/put/info",{
+          imagen:this.user.imagen,
+          nombre:this.user.nombre,
+          descripcion: this.user.descripcion
+        },{
+          headers:{
+            Authorization: 'Bearer ' + this.token,
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
+          }
+        })
+        .then((response) => {
+          alert(response.data.message)
         })
         .catch((error) => console.log(error));
     },
+    deleteBook(id,index){
+      console.log(id,index)
+      this.libros.splice(index,1)
+      axios
+      .delete('http://127.0.0.1:8000/api/remover/libro',{
+          headers: {
+            Authorization: 'Bearer ' + this.token,
+          },data:{
+            libro_id:id
+          }
+      })
+      .then((response)=>console.log(response.data))
+      .catch((error)=>console.log(error));
+    },
+    getInfo(){
+      this.isLoading = true
+      if(VueCookies.get('user')){
+            this.token = VueCookies.get('user').token
+            axios
+            .get("http://127.0.0.1:8000/api/get/info",
+            {
+              headers: {
+                Authorization: 'Bearer ' + this.token
+              }
+            })
+            .then((response) => {
+              this.user.imagen = response.data.imagen
+              this.user.nombre = response.data.nombre
+              this.user.descripcion = response.data.descripcion
+            })
+            .catch((error) => console.log(error));
+        }
+    }
   },
 };
 </script>
